@@ -1,5 +1,7 @@
 clear all; close all;
 addpath('./matlab');
+addpath('./external');
+
 
 Zc_gt = 5.2;
 %Zt    = 1.8;
@@ -32,6 +34,14 @@ plane = [p0 v1 v2];
 %axis([-10 10 -10 10 -10 10]);
 drawPlane3d(plane);
 hold on;
+
+fv = stlread('./cadmodels/girl.stl');
+fv.vertices = fv.vertices * 1e-3; % go to metre scale
+patch(fv,'FaceColor',       [0.8 0.8 1.0], ...
+         'EdgeColor',       'none',        ...
+         'FaceLighting',    'gouraud',     ...
+         'AmbientStrength', 0.15);
+
 %drawLine3d([p0 v1])
 %drawLine3d([p0 v2])
 set(gcf, 'renderer', 'zbuffer');
