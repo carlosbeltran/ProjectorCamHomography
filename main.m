@@ -92,11 +92,31 @@ point4 = intersectLinePlane(line4,plane);
 drawPoint3d(point4(1),point4(2),point4(3),'+');
 
 % Getting the ground plane -> camera plane homography
-pointsgroundplane = [point1(1:2)' point2(1:2)' point3(1:2)' point4(1:2)']
-pointsimgplane    = cam.project([point1' point2' point3' point4'])
-gHc = homography(pointsgroundplane,pointsimgplane);
+pointsGroundPlane = [point1(1:2)' point2(1:2)' point3(1:2)' point4(1:2)']
+pointsImgPlane    = cam.project([point1' point2' point3' point4'])
+cHg = homography(pointsGroundPlane,pointsImgPlane);
+gHc = inv(cHg);
 
 %Getting the ground plane -> projector plane homography
-pointsprjplane = [sq1' sq2' sq3' sq4'];
-cHp = homography(pointsgroundplane,pointsprjplane);
+pointsPrjPlane = [sq1' sq2' sq3' sq4'];
+pHg = homography(pointsGroundPlane,pointsPrjPlane);
+gHp = inv(pHg);
 
+% Testing homographies on one point
+testPointImgPlane  = [300,300]; % in the camera image plane
+testPointProjPlane = h2e(pHg*gHc*e2h(testPointImgPlane'));
+
+% Project both points in 3D to see if they are the same 3D point
+rayTestPrj = proj.ray(testPointProjPlane);
+rp1  = rayTestPrj.P0;
+rp2  = rayTestPrj.d;
+lineTestPrj = [rp1' rp2'];
+drawLine3d(lineTestPrj,'r');
+point3DTestPrj = intersectLinePlane(lineTestPrj,plane);
+
+rayTestImg = cam.ray(testPointImgPlane');
+rp1 = rayTestImg.P0;
+rp2 = rayTestImg.d;
+lineTestImg = [rp1' rp2'];
+drawLine3d(lineTestImg,'r');
+point3DTestImg = intersectLinePlane(lineTestImg,plane);
