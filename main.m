@@ -120,3 +120,17 @@ rp2 = rayTestImg.d;
 lineTestImg = [rp1' rp2'];
 drawLine3d(lineTestImg,'r');
 point3DTestImg = intersectLinePlane(lineTestImg,plane);
+
+% Creating a circle around the ground plane testing point and reproject 
+% to the Projector plane
+testPointGroundPlane = h2e(gHc*e2h(testPointImgPlane'));
+testCircleGroundPlane = circle(testPointGroundPlane,1.6);
+[~,numPtsInCircle] = size(testCircleGroundPlane);
+test3DCircleGroundPlane = [testCircleGroundPlane; zeros(1,numPtsInCircle)];
+
+drawPoint3d(test3DCircleGroundPlane(1,:), ...
+            test3DCircleGroundPlane(2,:), ...
+            test3DCircleGroundPlane(3,:), '+');
+
+proj.plot(test3DCircleGroundPlane);
+
